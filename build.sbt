@@ -1,3 +1,6 @@
+import scala.util.Try
+import scala.sys.process._
+
 name := "acked-streams"
 
 organization := "com.timcharper"
@@ -13,7 +16,7 @@ val appProperties = {
 }
 
 libraryDependencies ++= Seq(
-  "com.typesafe.akka" %% "akka-stream"  % "2.5.31",
+  "com.typesafe.akka" %% "akka-stream"  % "2.6.15",
   "org.scalatest"     %% "scalatest"    % "3.1.1" % "test")
 
 version := appProperties.getProperty("version")
@@ -38,12 +41,13 @@ pomExtra := {
 
 publishMavenStyle := true
 
-publishTo := {
-  val nexus = "https://oss.sonatype.org/"
-  if (isSnapshot.value)
-    Some("snapshots" at nexus + "content/repositories/snapshots")
-  else
-    Some("releases"  at nexus + "service/local/staging/deploy/maven2")
-}
+publishTo := Some(
+  "GitHub Package Registry".at(s"https://maven.pkg.github.com/telus-agcg/acked-streams")
+)
+
+credentials ++= sys.env
+  .get("GITHUB_TOKEN") // CI
+  .orElse(Try("gh auth token".!!).toOption.map(_.trim)) // local
+  .map(Credentials("GitHub Package Registry", "maven.pkg.github.com", "telus-agcg", _))
 
 publishArtifact in Test := false
