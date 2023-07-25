@@ -3,7 +3,8 @@ import scala.sys.process._
 
 name := "acked-streams"
 
-organization := "com.timcharper"
+// change org to be consistent with "com.github.pjfanning" %% "op-rabbit-akka-stream"
+organization := "com.github.timcharper.acked-stream"
 
 scalaVersion := "2.13.2"
 
